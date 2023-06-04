@@ -1,0 +1,25 @@
+﻿  Application.cpp
+G:\Visual Studio Projects\Procedural3DWorld\Procedural3DWorld\src\Application.cpp(96,67): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+G:\Visual Studio Projects\Procedural3DWorld\Procedural3DWorld\src\Application.cpp(96,53): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+G:\Visual Studio Projects\Procedural3DWorld\Procedural3DWorld\src\Application.cpp(115,46): warning C4244: 'argument': conversion from 'T' to 'GLsizei', possible loss of data
+          with
+          [
+              T=float
+          ]
+G:\Visual Studio Projects\Procedural3DWorld\Procedural3DWorld\src\Application.cpp(115,32): warning C4244: 'argument': conversion from 'T' to 'GLsizei', possible loss of data
+          with
+          [
+              T=float
+          ]
+G:\Visual Studio Projects\Procedural3DWorld\Procedural3DWorld\src\Application.cpp(269,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+G:\Visual Studio Projects\Procedural3DWorld\Procedural3DWorld\src\Application.cpp(275,27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+G:\Visual Studio Projects\Procedural3DWorld\Procedural3DWorld\src\Application.cpp(276,24): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Procedural3DWorld.vcxproj -> G:\Visual Studio Projects\Procedural3DWorld\Debug\Procedural3DWorld.exe
