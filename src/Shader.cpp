@@ -86,12 +86,12 @@ uint32_t Shader::compileShader(uint32_t type, const std::string& src)
 }
 
 
-void Shader::bind()
+void Shader::bind() const
 {
     glUseProgram(programID);
 }
 
-void Shader::unbind()
+void Shader::unbind() const
 {
     glUseProgram(0);
 }

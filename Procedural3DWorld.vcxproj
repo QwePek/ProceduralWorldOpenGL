@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="res\libraries\glm\detail\glm.cpp" />
     <ClCompile Include="res\libraries\stb_image\stb_image.cpp" />
@@ -140,6 +141,8 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
+    <ClCompile Include="src\VertexArray.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\libraries\glm\detail\func_common.inl" />
@@ -281,6 +284,7 @@
     <None Include="src\Shaders\shader.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="res\libraries\glm\common.hpp" />
@@ -568,10 +572,14 @@
     <ClInclude Include="res\libraries\stb_image\stb_image.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\VertexBuffer.h" />
+    <ClInclude Include="src\VertexArray.h" />
+    <ClInclude Include="src\VertexBufferLayout.h" />
+    <ClInclude Include="src\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\awesomeface.png" />
     <Image Include="res\container.jpg" />
+    <Image Include="res\Textures\AllTextures.png" />
     <Image Include="res\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

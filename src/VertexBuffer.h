@@ -10,5 +10,5 @@ public:
 	void unbind() const;
 
 private:
-	uint32_t rendererID = 0;
+	unsigned int rendererID;
 };

@@ -18,15 +18,17 @@ bool GLLogCall(const char* function, const char* file, int line)
 	return true;
 }
 
-void Renderer::clear()
+void Renderer::clear() const
 {
 	glClearColor(0.494f, 0.654f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::draw(const Shader& shader) const
+void Renderer::draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const
 {
 	shader.bind();
-
-	//GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr));
+	va.bind();
+	ib.bind();
+	
+	GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr));
 }

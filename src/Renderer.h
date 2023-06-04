@@ -1,5 +1,7 @@
 #pragma once
 #include "Shader.h"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
 
 #define ASSERT(x) if(!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\
@@ -12,8 +14,8 @@ bool GLLogCall(const char* function, const char* file, int line);
 class Renderer
 {
 public:
-	void draw(const Shader& shader) const;
-	void clear();
+	void clear() const;
+	void draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 
 private:
 };

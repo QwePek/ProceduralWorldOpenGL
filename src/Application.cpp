@@ -5,12 +5,17 @@
 #include <fstream>
 #include <sstream>
 #include "Shader.h"
-#include "stb_image\stb_image.h"
 #include "glm\glm.hpp"
 #include "glm\gtc\matrix_transform.hpp"
 #include "glm\gtc\type_ptr.hpp"
+
 #include "Camera.h"
 #include "Renderer.h"
+#include "VertexBuffer.h"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "Texture.h"
 
 glm::vec2 windowSize = glm::vec2(1000, 800);
 
@@ -115,53 +120,63 @@ int main(void)
         glEnable(GL_DEPTH_TEST); //Aby kurwa trojkaty sie rysowaly nie za sob¹ i nie nachodzily xd
 
         float squareMuj[] = {
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-             0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-             0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            //Przednia 1: z-const
+            -0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
+            -0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
+             0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
+             0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
 
-            -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-             0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+            //Sciana 2: z-const
+            -0.5f, -0.5f, 0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
+            -0.5f,  0.5f, 0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
+             0.5f, -0.5f, 0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
+             0.5f,  0.5f, 0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
 
-            -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+             //Sciana 3: x-const
+            -0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
+            -0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
+            -0.5f, -0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
+            -0.5f,  0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
 
-             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-             0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-             0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-             0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+             //Sciana 4: x-const
+             0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
+             0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
+             0.5f, -0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
+             0.5f,  0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
 
-            -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-             0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-             0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-             0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+             //Sciana 3: y-const
+            -0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
+            -0.5f, -0.5f,  0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
+             0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
+             0.5f, -0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
 
-            -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-             0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
+             //Sciana 4: y-const
+            -0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
+            -0.5f,  0.5f,  0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
+             0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
+             0.5f,  0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f
         };
 
-        //uint32_t indicies[] = {
-        //    0,1,3,
-        //    1,2,3
-        //};
+        uint32_t indicies[] = {
+            //0
+            0,1,2,
+            2,1,3,
+            //4
+            4,5,6,
+            6,5,7,
+            //8
+            8,9,10,
+            9,10,11,
+            //12
+            12,13,14,
+            13,14,15,
+            //16
+            16,17,18,
+            17,18,19,
+            //20
+            20,21,22,
+            21,22,23,
+        };
 
         float texCoords[] = {
             0.0f, 0.0f,
@@ -173,85 +188,24 @@ int main(void)
         //Creating, Compiling, Linking Shaders
         Shader myShader("src/Shaders/shader.shader");
 
-        uint32_t vbo, vao, ebo;
-        glGenVertexArrays(1, &vao);
+        VertexBuffer vbo(squareMuj, sizeof(squareMuj));
+        VertexArray vao;
+        IndexBuffer ib(indicies, 36);
 
-        //glGenBuffers(1, &vbo);
-        glGenBuffers(1, &ebo);
+        VertexBufferLayout layout;
+        layout.Push<float>(3);
+        layout.Push<float>(3);
+        layout.Push<float>(2);
 
-        glBindVertexArray(vao);
-        //glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        //glBufferData(GL_ARRAY_BUFFER, sizeof(squareMuj), squareMuj, GL_STATIC_DRAW);
+        vao.addBuffer(vbo, layout);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-
-        //Texturki
-        uint32_t tex[2];
-        glGenTextures(2, tex);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, tex[0]);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        stbi_set_flip_vertically_on_load(true);
-
-        int width, height, nrChannels;
-        unsigned char* imgData = stbi_load("res\\container.jpg", &width, &height, &nrChannels, 0);
-
-        if (imgData)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imgData);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        else
-        {
-            std::cout << "Failed to load image!" << std::endl;
-        }
-        stbi_image_free(imgData);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, tex[1]);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        imgData = stbi_load("res\\awesomeface.png", &width, &height, &nrChannels, 0);
-
-        if (imgData)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        else
-        {
-            std::cout << "Failed to load image!" << std::endl;
-        }
-        stbi_image_free(imgData);
-
-        myShader.bind();
-        myShader.setUniform1i("ourTexture1", 0);
-        myShader.setUniform1i("ourTexture2", 0);
         myShader.unbind();
+        vbo.unbind();
+        vao.unbind();
+        ib.unbind();
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        Texture tx1("res\\container.jpg");
+        Texture tx2("res\\Textures\\AllTextures.png");
 
         //Hide mouse cursor
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -262,7 +216,7 @@ int main(void)
         //Set scroll function callback
         glfwSetScrollCallback(window, scroll_callback);
 
-        int mapWidth = 20, mapDepth = 20, maxHeight = 5;
+        int mapWidth = 10, mapDepth = 10, maxHeight = 5;
         srand(time(NULL));
         std::vector<glm::vec3> pozycjeSzesc;
         for (int z = 0; z < mapDepth; z++)
@@ -271,8 +225,7 @@ int main(void)
             {
                 float yHeight = rand() % maxHeight;
                 for (int y = yHeight; y >= 0; y--)
-                    pozycjeSzesc.push_back(glm::vec3(x, y, z));
-
+                    pozycjeSzesc.push_back(glm::vec3(x /2.0f, y /2.0f, z /2.0f));
             }
         }
 
@@ -287,52 +240,34 @@ int main(void)
             renderer.clear();
 
             processInput(window);
-
             myShader.bind();
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, tex[0]);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, tex[1]);
-
-            glBindVertexArray(vao);
+            tx1.bind();
+            tx2.bind(1);
 
             myShader.setUnfiformMat4f("projection", cam.getProjectionMatrix(windowSize));
             myShader.setUnfiformMat4f("view", cam.getViewMatrix());
-
 
             for (uint32_t i = 0; i < pozycjeSzesc.size(); i++)
             {
                 glm::mat4 modelMat = glm::mat4(1.0f);
                 modelMat = glm::translate(modelMat, pozycjeSzesc[i]);
                 modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(0.5f, 1.0f, 0.0f));
+                modelMat = glm::scale(modelMat, glm::vec3(0.5f, 0.5f, 0.5f));
 
                 if (i % 2 == 0)
-                {
                     myShader.setUniform1i("ourTexture1", 0);
-
-                }
                 else
-                {
                     myShader.setUniform1i("ourTexture1", 1);
-                }
+
                 myShader.setUnfiformMat4f("model", modelMat);
 
-                glDrawArrays(GL_TRIANGLES, 0, 36);
+                renderer.draw(vao, ib, myShader);
             }
-
-
-            //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-            glBindVertexArray(0);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-
-        glDeleteVertexArrays(1, &vao);
-        glDeleteBuffers(1, &vbo);
-        glDeleteBuffers(1, &ebo);
     }
     glfwTerminate();
     return 0;
