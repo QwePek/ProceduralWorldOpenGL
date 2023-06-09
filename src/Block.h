@@ -18,7 +18,7 @@ public:
     glm::vec3 position;
     glm::vec3 size;
     glm::vec3 color;
-    unsigned int textureNum = 0;
+    glm::vec2 textureNum = glm::vec2(0.0f);
 
     std::array<blockVertex, 24> createBlock();
 

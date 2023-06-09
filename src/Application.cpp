@@ -121,38 +121,68 @@ int main(void)
     {
         glEnable(GL_DEPTH_TEST); //Aby kurwa trojkaty sie rysowaly nie za sob¹ i nie nachodzily xd
 
+        //uint32_t indicies[] = {
+        //    //0
+        //    0,1,2, 2,1,3,
+        //    //4
+        //    4,5,6, 6,5,7,
+        //    //8
+        //    8,9,10, 9,10,11,
+        //    //12
+        //    12,13,14, 13,14,15,
+        //    //16
+        //    16,17,18, 17,18,19,
+        //    //20
+        //    20,21,22, 21,22,23,
+        //};
 
+        int mapWidth = 16, mapDepth = 16, maxHeight = 5;
+        srand(time(NULL));
 
-        Block bloczek;
-        bloczek.position = glm::vec3(0.0f, 0.0f, 0.0f);
-        bloczek.size = glm::vec3(1.0f, 1.0f, 1.0f);
-        bloczek.color = glm::vec3(1.0f, 1.0f, 1.0f);
+        std::vector<Block> bloki;
+        for (int z = 0; z < mapDepth; z++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                Block tmp;
+                tmp.color = glm::vec3(1.0f, 1.0f, 1.0f);
+                tmp.size = glm::vec3(1.0f, 1.0f, 1.0f);
+                tmp.textureNum = glm::vec2(x, z);
 
+                float yHeight = rand() % maxHeight;
+                //for (int y = yHeight; y >= 0; y--)
+                    tmp.position = glm::vec3(x, yHeight, z);
 
-        uint32_t indicies[] = {
-            //0
-            0,1,2, 2,1,3,
-            //4
-            4,5,6, 6,5,7,
-            //8
-            8,9,10, 9,10,11,
-            //12
-            12,13,14, 13,14,15,
-            //16
-            16,17,18, 17,18,19,
-            //20
-            20,21,22, 21,22,23,
-        };
+                std::cout << "ILE: " << (mapWidth * z + x) << std::endl;
+                bloki.push_back(tmp);
+            }
+        }
+
+        std::vector<uint32_t> indi;
+
+        for (int j = 0; j < mapWidth * mapDepth; j++)
+        {
+            for (int i = 0; i < 24; i+=4)
+            {
+                indi.push_back(i + j * 24);
+                indi.push_back(i + 1 + j * 24);
+                indi.push_back(i + 2 + j * 24);
+
+                indi.push_back(i + 2 + j * 24);
+                indi.push_back(i + 1 + j * 24);
+                indi.push_back(i + 3 + j * 24);
+            }
+        }
 
 
         //Creating, Compiling, Linking Shaders
         Shader myShader("src/Shaders/shader.shader");
 
-        VertexBuffer vbo(sizeof(blockVertex) * 24 * 50); //VertexBuffer bedzie mogl przechowac 50 blokow
+        VertexBuffer vbo(sizeof(blockVertex) * 24 * mapWidth * mapDepth); //VertexBuffer bedzie mogl przechowac 50 blokow
         //VertexBuffer vbo(squareMuj, sizeof(squareMuj)); //VertexBuffer bedzie mogl przechowac 50 blokow
 
         VertexArray vao;
-        IndexBuffer ib(indicies, 36);
+        IndexBuffer ib(indi.data(), indi.size());
 
         VertexBufferLayout layout;
         layout.Push<float>(3);
@@ -178,19 +208,6 @@ int main(void)
         //Set scroll function callback
         glfwSetScrollCallback(window, scroll_callback);
 
-        int mapWidth = 1, mapDepth = 1, maxHeight = 1;
-        srand(time(NULL));
-        std::vector<glm::vec3> pozycjeSzesc;
-        for (int z = 0; z < mapDepth; z++)
-        {
-            for (int x = 0; x < mapWidth; x++)
-            {
-                float yHeight = rand() % maxHeight;
-                for (int y = yHeight; y >= 0; y--)
-                    pozycjeSzesc.push_back(glm::vec3(x /2.0f, y /2.0f, z /2.0f));
-            }
-        }
-
         Renderer renderer;
 
         while (!glfwWindowShouldClose(window))
@@ -204,65 +221,33 @@ int main(void)
             processInput(window);
             myShader.bind();
 
-            //float squareMuj[] = {
-            //    //Przednia 1: z-const
-            //    -0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
-            //    -0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
-            //     0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
-            //     0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
+            int offset = 0;
+            blockVertex blok[24 * 256];
 
-            //     //Sciana 2: z-const
-            //     -0.5f, -0.5f, 0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
-            //     -0.5f,  0.5f, 0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
-            //      0.5f, -0.5f, 0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
-            //      0.5f,  0.5f, 0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
+            for (int i = 0; i < bloki.size() - 1; i++)
+            {
+                auto b0 = bloki[i].createBlock();
+                offset += b0.size();
 
-            //      //Sciana 3: x-const
-            //     -0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
-            //     -0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
-            //     -0.5f, -0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
-            //     -0.5f,  0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
+                memcpy(blok + offset, b0.data(), b0.size() * sizeof(blockVertex));
 
-            //     //Sciana 4: x-const
-            //     0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
-            //     0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
-            //     0.5f, -0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
-            //     0.5f,  0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
+                //for (int i = 0; i < 24; i++)
+                //{
+                //    if (i % 4 == 0)
+                //        std::cout << std::endl;
+                //    std::cout << i << ": " << blok[i].position.x << ", " << blok[i].position.y << ", " <<
+                //        blok[i].position.z << ", " << blok[i].color.x << ", " << blok[i].color.y <<
+                //        ", " << blok[i].color.z << ", " << blok[i].txCoord.x << ", " <<
+                //        blok[i].txCoord.y << "   -   " << (sizeof(blockVertex) * i) << std::endl;
 
-            //     //Sciana 3: y-const
-            //    -0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
-            //    -0.5f, -0.5f,  0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
-            //     0.5f, -0.5f, -0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
-            //     0.5f, -0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f,
+                //}
+                //std::cin.get();
 
-            //     //Sciana 4: y-const
-            //    -0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  0.0f,0.0f,
-            //    -0.5f,  0.5f,  0.5f,   1.0f,1.0f,1.0f,  0.0f,1.0f,
-            //     0.5f,  0.5f, -0.5f,   1.0f,1.0f,1.0f,  1.0f,0.0f,
-            //     0.5f,  0.5f,  0.5f,   1.0f,1.0f,1.0f,  1.0f,1.0f
-            //};
-
-
-            auto b0 = bloczek.createBlock();
-
-            blockVertex blok[24];
-            memcpy(blok, b0.data(), b0.size() * sizeof(blockVertex));
-
-            //for (int i = 0; i < 24; i++)
-            //{
-            //    if (i % 4 == 0)
-            //        std::cout << std::endl;
-            //    std::cout << i << ": " << blok[i].position.x << ", " << blok[i].position.y << ", " <<
-            //        blok[i].position.z << ", " << blok[i].color.x << ", " << blok[i].color.y <<
-            //        ", " << blok[i].color.z << ", " << blok[i].txCoord.x << ", " <<
-            //        blok[i].txCoord.y << "   -   " << (sizeof(blockVertex) * i) << std::endl;
-
-            //}
-            //std::cin.get();
-
+            }
             vbo.updateData(blok, sizeof(blok));
 
-            bloczek.position = glm::vec3(sin(glfwGetTime()), cos(glfwGetTime()), 0.0f);
+            //bloczek.position = glm::vec3(sin(glfwGetTime()), cos(glfwGetTime()), 0.0f);
+            //bloczek2.position = glm::vec3(cos(glfwGetTime()), cos(glfwGetTime()), bloczek2.position.z);
 
 
             tx1.bind();
@@ -272,10 +257,10 @@ int main(void)
             myShader.setUnfiformMat4f("view", cam.getViewMatrix());
 
             glm::mat4 modelMat = glm::mat4(1.0f);
-            modelMat = glm::translate(modelMat, pozycjeSzesc[0]);
+            modelMat = glm::translate(modelMat, glm::vec3(0.0f));
             modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(0.5f, 1.0f, 0.0f));
-            modelMat = glm::scale(modelMat, glm::vec3(0.5f, 0.5f, 0.5f));
-            myShader.setUniform1i("ourTexture1", 0);
+            modelMat = glm::scale(modelMat, glm::vec3(0.2f, 0.2f, 0.2f));
+            myShader.setUniform1i("ourTexture1", 1);
             myShader.setUnfiformMat4f("model", modelMat);
 
             renderer.draw(vao, ib, myShader);
