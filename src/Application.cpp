@@ -17,7 +17,7 @@
 #include "IndexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "Texture.h"
-#include "Block.h"
+#include "World.h"
 
 glm::vec2 windowSize = glm::vec2(1000, 800);
 
@@ -120,69 +120,42 @@ int main(void)
     
     {
         glEnable(GL_DEPTH_TEST); //Aby kurwa trojkaty sie rysowaly nie za sob¹ i nie nachodzily xd
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        //uint32_t indicies[] = {
-        //    //0
-        //    0,1,2, 2,1,3,
-        //    //4
-        //    4,5,6, 6,5,7,
-        //    //8
-        //    8,9,10, 9,10,11,
-        //    //12
-        //    12,13,14, 13,14,15,
-        //    //16
-        //    16,17,18, 17,18,19,
-        //    //20
-        //    20,21,22, 21,22,23,
-        //};
-
-        int mapWidth = 16, mapDepth = 16, maxHeight = 5;
         srand(time(NULL));
 
-        std::vector<Block> bloki;
-        for (int z = 0; z < mapDepth; z++)
-        {
-            for (int x = 0; x < mapWidth; x++)
-            {
-                Block tmp;
-                tmp.color = glm::vec3(1.0f, 1.0f, 1.0f);
-                tmp.size = glm::vec3(1.0f, 1.0f, 1.0f);
-                tmp.textureNum = glm::vec2(x, z);
 
-                float yHeight = rand() % maxHeight;
-                //for (int y = yHeight; y >= 0; y--)
-                    tmp.position = glm::vec3(x, yHeight, z);
+        //int mapWidth = 16, mapDepth = 16, maxHeight = 1;
 
-                std::cout << "ILE: " << (mapWidth * z + x) << std::endl;
-                bloki.push_back(tmp);
-            }
-        }
+        //std::vector<Block> bloki;
+        //for (int z = 0; z < mapDepth; z++)
+        //{
+        //    for (int x = 0; x < mapWidth; x++)
+        //    {
+        //        Block tmp;
+        //        tmp.setTexture(glm::vec2(0,0));
 
-        std::vector<uint32_t> indi;
+        //        float yHeight = rand() % maxHeight;
+        //        //for (int y = yHeight; y >= 0; y--)
+        //        tmp.position = glm::vec3(x, yHeight, z);
 
-        for (int j = 0; j < mapWidth * mapDepth; j++)
-        {
-            for (int i = 0; i < 24; i+=4)
-            {
-                indi.push_back(i + j * 24);
-                indi.push_back(i + 1 + j * 24);
-                indi.push_back(i + 2 + j * 24);
+        //        bloki.push_back(tmp);
+        //    }
+        //}
 
-                indi.push_back(i + 2 + j * 24);
-                indi.push_back(i + 1 + j * 24);
-                indi.push_back(i + 3 + j * 24);
-            }
-        }
+        //std::vector<uint32_t> indi;
 
+
+        World wrld(1, 1);
 
         //Creating, Compiling, Linking Shaders
         Shader myShader("src/Shaders/shader.shader");
 
-        VertexBuffer vbo(sizeof(blockVertex) * 24 * mapWidth * mapDepth); //VertexBuffer bedzie mogl przechowac 50 blokow
-        //VertexBuffer vbo(squareMuj, sizeof(squareMuj)); //VertexBuffer bedzie mogl przechowac 50 blokow
+        VertexBuffer vbo(sizeof(blockVertex) * 24 * wrld.getBlocksNeeded()); //VertexBuffer bedzie mogl przechowac 50 blokow
 
         VertexArray vao;
-        IndexBuffer ib(indi.data(), indi.size());
+        //IndexBuffer ib(indi.data(), indi.size());
 
         VertexBufferLayout layout;
         layout.Push<float>(3);
@@ -194,7 +167,6 @@ int main(void)
         myShader.unbind();
         vbo.unbind();
         vao.unbind();
-        ib.unbind();
 
         Texture tx1("res\\container.jpg");
         Texture tx2("res\\Textures\\AllTextures.png");
@@ -222,29 +194,48 @@ int main(void)
             myShader.bind();
 
             int offset = 0;
-            blockVertex blok[24 * 256];
+            //blockVertex blok[24 * 256];
 
-            for (int i = 0; i < bloki.size() - 1; i++)
+
+            std::vector<uint32_t> wrldIndicies = wrld.getIndicies();
+            IndexBuffer ib(wrldIndicies.data(), wrldIndicies.size());
+
+            for (int i = 0; i < wrldIndicies.size(); i++)
             {
-                auto b0 = bloki[i].createBlock();
-                offset += b0.size();
-
-                memcpy(blok + offset, b0.data(), b0.size() * sizeof(blockVertex));
-
-                //for (int i = 0; i < 24; i++)
-                //{
-                //    if (i % 4 == 0)
-                //        std::cout << std::endl;
-                //    std::cout << i << ": " << blok[i].position.x << ", " << blok[i].position.y << ", " <<
-                //        blok[i].position.z << ", " << blok[i].color.x << ", " << blok[i].color.y <<
-                //        ", " << blok[i].color.z << ", " << blok[i].txCoord.x << ", " <<
-                //        blok[i].txCoord.y << "   -   " << (sizeof(blockVertex) * i) << std::endl;
-
-                //}
-                //std::cin.get();
-
+                std::cout << wrldIndicies[i] << std::endl;
             }
-            vbo.updateData(blok, sizeof(blok));
+
+            std::vector<float> wrldGeometry = wrld.getGeometry();
+            
+            vbo.updateData(wrldGeometry.data(), wrldGeometry.size() * sizeof(float));
+            
+            
+            ib.unbind();
+
+
+
+            //for (int i = 0; i < bloki.size() - 1; i++)
+            //{
+            //    auto b0 = bloki[i].getGeometry();
+            //    offset += b0.size();
+
+            //    memcpy(blok + offset, b0.data(), b0.size() * sizeof(blockVertex));
+
+            //    //for (int i = 0; i < 24; i++)
+            //    //{
+            //    //    if (i % 4 == 0)
+            //    //        std::cout << std::endl;
+            //    //    std::cout << i << ": " << blok[i].position.x << ", " << blok[i].position.y << ", " <<
+            //    //        blok[i].position.z << ", " << blok[i].color.x << ", " << blok[i].color.y <<
+            //    //        ", " << blok[i].color.z << ", " << blok[i].txCoord.x << ", " <<
+            //    //        blok[i].txCoord.y << "   -   " << (sizeof(blockVertex) * i) << std::endl;
+
+            //    //}
+            //    //std::cin.get();
+
+            //}
+
+            //vbo.updateData(blok, sizeof(blok));
 
             //bloczek.position = glm::vec3(sin(glfwGetTime()), cos(glfwGetTime()), 0.0f);
             //bloczek2.position = glm::vec3(cos(glfwGetTime()), cos(glfwGetTime()), bloczek2.position.z);

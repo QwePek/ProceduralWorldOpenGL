@@ -19,7 +19,14 @@ G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Application.cpp(118,32): war
           [
               T=float
           ]
-G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Application.cpp(140,19): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Application.cpp(152,31): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Application.cpp(227,31): warning C4018: '<': signed/unsigned mismatch
+G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Application.cpp(126,19): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Application.cpp(203,31): warning C4018: '<': signed/unsigned mismatch
+  Block.cpp
+G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Block.cpp(256,27): warning C4018: '<': signed/unsigned mismatch
+G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Block.cpp(269,27): warning C4018: '<': signed/unsigned mismatch
+G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Block.cpp(282,27): warning C4018: '<': signed/unsigned mismatch
+G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Block.cpp(295,27): warning C4018: '<': signed/unsigned mismatch
+G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Block.cpp(308,27): warning C4018: '<': signed/unsigned mismatch
+G:\Visual Studio Projekty\ProceduralWorldOpenGL\src\Block.cpp(321,27): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
   Procedural3DWorld.vcxproj -> G:\Visual Studio Projekty\ProceduralWorldOpenGL\Debug\Procedural3DWorld.exe
