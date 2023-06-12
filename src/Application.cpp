@@ -126,28 +126,7 @@ int main(void)
         srand(time(NULL));
 
 
-        //int mapWidth = 16, mapDepth = 16, maxHeight = 1;
-
-        //std::vector<Block> bloki;
-        //for (int z = 0; z < mapDepth; z++)
-        //{
-        //    for (int x = 0; x < mapWidth; x++)
-        //    {
-        //        Block tmp;
-        //        tmp.setTexture(glm::vec2(0,0));
-
-        //        float yHeight = rand() % maxHeight;
-        //        //for (int y = yHeight; y >= 0; y--)
-        //        tmp.position = glm::vec3(x, yHeight, z);
-
-        //        bloki.push_back(tmp);
-        //    }
-        //}
-
-        //std::vector<uint32_t> indi;
-
-
-        World wrld(1, 1);
+        World wrld(16, 16);
 
         //Creating, Compiling, Linking Shaders
         Shader myShader("src/Shaders/shader.shader");
@@ -191,70 +170,35 @@ int main(void)
             renderer.clear();
 
             processInput(window);
-            myShader.bind();
 
-            int offset = 0;
-            //blockVertex blok[24 * 256];
-
-
-            std::vector<uint32_t> wrldIndicies = wrld.getIndicies();
-            IndexBuffer ib(wrldIndicies.data(), wrldIndicies.size());
-
-            for (int i = 0; i < wrldIndicies.size(); i++)
+            for (int i = 0; i < wrld.getWorldSize(); i++)
             {
-                std::cout << wrldIndicies[i] << std::endl;
+                std::vector<uint32_t> wrldIndicies = wrld.getIndicies(i);
+                IndexBuffer ib(wrldIndicies.data(), wrldIndicies.size());
+
+                std::vector<float> wrldGeometry = wrld.getGeometry(i);
+
+                vbo.updateData(wrldGeometry.data(), wrldGeometry.size() * sizeof(float));
+                ib.unbind();
+
+                myShader.bind();
+
+                tx1.bind();
+                tx2.bind(1);
+
+                myShader.setUnfiformMat4f("projection", cam.getProjectionMatrix(windowSize));
+                myShader.setUnfiformMat4f("view", cam.getViewMatrix());
+
+                glm::mat4 modelMat = glm::mat4(1.0f);
+                
+                modelMat = glm::translate(modelMat, wrld.getChunkPos(i) / 5.0f);
+                modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(0.5f, 1.0f, 0.0f));
+                modelMat = glm::scale(modelMat, glm::vec3(0.2f, 0.2f, 0.2f));
+                myShader.setUniform1i("ourTexture1", 1);
+                myShader.setUnfiformMat4f("model", modelMat);
+
+                renderer.draw(vao, ib, myShader);
             }
-
-            std::vector<float> wrldGeometry = wrld.getGeometry();
-            
-            vbo.updateData(wrldGeometry.data(), wrldGeometry.size() * sizeof(float));
-            
-            
-            ib.unbind();
-
-
-
-            //for (int i = 0; i < bloki.size() - 1; i++)
-            //{
-            //    auto b0 = bloki[i].getGeometry();
-            //    offset += b0.size();
-
-            //    memcpy(blok + offset, b0.data(), b0.size() * sizeof(blockVertex));
-
-            //    //for (int i = 0; i < 24; i++)
-            //    //{
-            //    //    if (i % 4 == 0)
-            //    //        std::cout << std::endl;
-            //    //    std::cout << i << ": " << blok[i].position.x << ", " << blok[i].position.y << ", " <<
-            //    //        blok[i].position.z << ", " << blok[i].color.x << ", " << blok[i].color.y <<
-            //    //        ", " << blok[i].color.z << ", " << blok[i].txCoord.x << ", " <<
-            //    //        blok[i].txCoord.y << "   -   " << (sizeof(blockVertex) * i) << std::endl;
-
-            //    //}
-            //    //std::cin.get();
-
-            //}
-
-            //vbo.updateData(blok, sizeof(blok));
-
-            //bloczek.position = glm::vec3(sin(glfwGetTime()), cos(glfwGetTime()), 0.0f);
-            //bloczek2.position = glm::vec3(cos(glfwGetTime()), cos(glfwGetTime()), bloczek2.position.z);
-
-
-            tx1.bind();
-            tx2.bind(1);
-
-            myShader.setUnfiformMat4f("projection", cam.getProjectionMatrix(windowSize));
-            myShader.setUnfiformMat4f("view", cam.getViewMatrix());
-
-            glm::mat4 modelMat = glm::mat4(1.0f);
-            modelMat = glm::translate(modelMat, glm::vec3(0.0f));
-            modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(0.5f, 1.0f, 0.0f));
-            modelMat = glm::scale(modelMat, glm::vec3(0.2f, 0.2f, 0.2f));
-            myShader.setUniform1i("ourTexture1", 1);
-            myShader.setUnfiformMat4f("model", modelMat);
-
-            renderer.draw(vao, ib, myShader);
 
             glfwSwapBuffers(window);
             glfwPollEvents();

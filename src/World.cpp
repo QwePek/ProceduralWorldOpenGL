@@ -3,16 +3,29 @@
 World::World(int sizeX, int sizeZ)
 {
 	size = { sizeX, sizeZ };
-
-	for (int x = 0; x < sizeX; x++)
+	chunks = new Chunk[size.x * size.y];
+	
+	int x = 0, z = 0;
+	for (int i = 0; i < size.x * size.y; i++)
 	{
-		for (int z = 0; z < sizeZ; z++)
+		chunks[i].init(glm::uvec2(x, z), &perlin);
+		worldGeometry.push_back(std::vector<float>());
+		worldIndicies.push_back(std::vector<uint32_t>());
+
+		x++;
+		if (x == size.x)
 		{
-			chunks.push_back(Chunk());
+			x = 0;
+			z++;
 		}
 	}
 
 	update();
+}
+
+World::~World()
+{
+	delete[] chunks;
 }
 
 void World::update()
@@ -23,14 +36,34 @@ void World::update()
 
 void World::regenerateGeometry()
 {
-	worldGeometry = chunks[0].getGeometry();
+	for (int i = 0; i < worldGeometry.size(); i++)
+		worldGeometry[i].clear();
 
-	std::cout << "1: " << worldGeometry.size() << std::endl;
+	for (int i = 0; i < size.x * size.y; i++)
+	{
+		auto vec = chunks[i].getGeometry();
+		
+		//std::cout << "I: " << i << std::endl;
+		//for (int j = 0; j < vec.size(); j++)
+		//{
+			//if (j % 8 == 0)
+				//std::cout << std::endl;
+
+			//std::cout << vec[j] << ", ";
+		//}
+
+		worldGeometry[i].insert(worldGeometry[i].begin(), vec.begin(), vec.end());
+	}
 }
 
 void World::regenerateIndicies()
 {
-	worldIndicies = chunks[0].getIndicies();
+	for (int i = 0; i < worldIndicies.size(); i++)
+		worldIndicies[i].clear();
 
-	std::cout << "2: " << worldIndicies.size() << std::endl;
+	for (int i = 0; i < size.x * size.y; i++)
+	{
+		auto vec = chunks[i].getIndicies();
+		worldIndicies[i].insert(worldIndicies[i].begin(), vec.begin(), vec.end());
+	}
 }

@@ -1,4 +1,48 @@
-﻿IndexBuffer.obj : error LNK2019: unresolved external symbol __imp___glewBindBuffer referenced in function "public: __cdecl IndexBuffer::IndexBuffer(unsigned int const *,unsigned int)" (??0IndexBuffer@@QEAA@PEBII@Z)
+﻿  Chunk.cpp
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Chunk.cpp(8,20): warning C4018: '<': signed/unsigned mismatch
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Chunk.cpp(10,21): warning C4018: '<': signed/unsigned mismatch
+  Block.cpp
+  IndexBuffer.cpp
+  Renderer.cpp
+  glm.cpp
+  stb_image.cpp
+  Camera.cpp
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Camera.cpp(26,34): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Camera.cpp(26,26): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Camera.cpp(46,12): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Camera.cpp(47,14): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  Shader.cpp
+  Application.cpp
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(99,67): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(99,53): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(118,46): warning C4244: 'argument': conversion from 'T' to 'GLsizei', possible loss of data
+          with
+          [
+              T=float
+          ]
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(118,32): warning C4244: 'argument': conversion from 'T' to 'GLsizei', possible loss of data
+          with
+          [
+              T=float
+          ]
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(126,19): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(180,68): warning C4267: 'argument': conversion from 'size_t' to 'const unsigned int', possible loss of data
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(189,84): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
+  VertexBuffer.cpp
+  VertexArray.cpp
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\VertexArray.cpp(40,43): warning C4312: 'type cast': conversion from 'unsigned int' to 'const void *' of greater size
+  Texture.cpp
+  World.cpp
+  Generating Code...
+IndexBuffer.obj : error LNK2019: unresolved external symbol __imp___glewBindBuffer referenced in function "public: __cdecl IndexBuffer::IndexBuffer(unsigned int const *,unsigned int)" (??0IndexBuffer@@QEAA@PEBII@Z)
 VertexBuffer.obj : error LNK2001: unresolved external symbol __imp___glewBindBuffer
 IndexBuffer.obj : error LNK2019: unresolved external symbol __imp___glewBufferData referenced in function "public: __cdecl IndexBuffer::IndexBuffer(unsigned int const *,unsigned int)" (??0IndexBuffer@@QEAA@PEBII@Z)
 VertexBuffer.obj : error LNK2001: unresolved external symbol __imp___glewBufferData
@@ -38,6 +82,7 @@ Application.obj : error LNK2019: unresolved external symbol glfwSetScrollCallbac
 Application.obj : error LNK2019: unresolved external symbol glfwGetTime referenced in function main
 Application.obj : error LNK2019: unresolved external symbol glfwMakeContextCurrent referenced in function main
 Application.obj : error LNK2019: unresolved external symbol glfwSwapBuffers referenced in function main
+VertexBuffer.obj : error LNK2019: unresolved external symbol __imp___glewBufferSubData referenced in function "public: void __cdecl VertexBuffer::updateData(void const *,unsigned int)" (?updateData@VertexBuffer@@QEAAXPEBXI@Z)
 VertexArray.obj : error LNK2019: unresolved external symbol __imp___glewEnableVertexAttribArray referenced in function "public: void __cdecl VertexArray::addBuffer(class VertexBuffer const &,class VertexBufferLayout const &)" (?addBuffer@VertexArray@@QEAAXAEBVVertexBuffer@@AEBVVertexBufferLayout@@@Z)
 VertexArray.obj : error LNK2019: unresolved external symbol __imp___glewVertexAttribPointer referenced in function "public: void __cdecl VertexArray::addBuffer(class VertexBuffer const &,class VertexBufferLayout const &)" (?addBuffer@VertexArray@@QEAAXAEBVVertexBuffer@@AEBVVertexBufferLayout@@@Z)
 VertexArray.obj : error LNK2019: unresolved external symbol __imp___glewBindVertexArray referenced in function "public: void __cdecl VertexArray::bind(void)const " (?bind@VertexArray@@QEBAXXZ)
@@ -45,6 +90,6 @@ VertexArray.obj : error LNK2019: unresolved external symbol __imp___glewDeleteVe
 VertexArray.obj : error LNK2019: unresolved external symbol __imp___glewGenVertexArrays referenced in function "public: __cdecl VertexArray::VertexArray(void)" (??0VertexArray@@QEAA@XZ)
 Texture.obj : error LNK2019: unresolved external symbol __imp___glewActiveTexture referenced in function "public: void __cdecl Texture::bind(unsigned int)const " (?bind@Texture@@QEBAXI@Z)
 Texture.obj : error LNK2019: unresolved external symbol __imp___glewGenerateMipmap referenced in function "public: __cdecl Texture::Texture(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (??0Texture@@QEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
-G:\Visual Studio Projekty\ProceduralWorldOpenGL\Dependencies\GLFW\lib-vc2022\glfw3.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
-G:\Visual Studio Projekty\ProceduralWorldOpenGL\Dependencies\GLEW\lib\Release\Win32\glew32s.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
-G:\Visual Studio Projekty\ProceduralWorldOpenGL\x64\Debug\Procedural3DWorld.exe : fatal error LNK1120: 43 unresolved externals
+G:\Visual Studio Projects\ProceduralWorldOpenGL\Dependencies\GLFW\lib-vc2022\glfw3.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+G:\Visual Studio Projects\ProceduralWorldOpenGL\Dependencies\GLEW\lib\Release\Win32\glew32s.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+G:\Visual Studio Projects\ProceduralWorldOpenGL\x64\Debug\Procedural3DWorld.exe : fatal error LNK1120: 44 unresolved externals

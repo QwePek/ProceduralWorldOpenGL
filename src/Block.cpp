@@ -201,11 +201,12 @@ void Block::setTxCoords(blockVertex* v, glm::vec2 txNum, bool side)
         1.0f - ((txNum.y + 1) * (1.0f / numOfTexInPNG.y))); //lewy dolny/
 }
 
-std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
+std::vector<float> Block::getGeometry(const BLOCK::SIDE side, glm::uvec2 offset)
 {
     if (textureNum.x == 2 && textureNum.y == 0)//AIR JAK NA RAZIE POPRAW TO POTEM
         return { };
 
+    geomOffset = offset;
     glm::vec3 sNa2 = size / 2.0f;
 
     std::vector<float> arr;
@@ -255,9 +256,9 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
         std::vector<float> a[6];
         for (int i = 0; i < top.size(); i++)
         {
-            a[0].push_back(top[i].position.x);
+            a[0].push_back(top[i].position.x + geomOffset.x);
             a[0].push_back(top[i].position.y);
-            a[0].push_back(top[i].position.z);
+            a[0].push_back(top[i].position.z + geomOffset.y);
 
             a[0].push_back(top[i].color.x);
             a[0].push_back(top[i].color.y);
@@ -266,11 +267,11 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
             a[0].push_back(top[i].txCoord.x);
             a[0].push_back(top[i].txCoord.y);
         }
-        for (int i = 0; i < top.size(); i++)
+        for (int i = 0; i < bottom.size(); i++)
         {
-            a[1].push_back(bottom[i].position.x);
+            a[1].push_back(bottom[i].position.x + geomOffset.x);
             a[1].push_back(bottom[i].position.y);
-            a[1].push_back(bottom[i].position.z);
+            a[1].push_back(bottom[i].position.z + geomOffset.y);
 
             a[1].push_back(bottom[i].color.x);
             a[1].push_back(bottom[i].color.y);
@@ -279,11 +280,11 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
             a[1].push_back(bottom[i].txCoord.x);
             a[1].push_back(bottom[i].txCoord.y);
         }
-        for (int i = 0; i < top.size(); i++)
+        for (int i = 0; i < side1.size(); i++)
         {
-            a[2].push_back(side1[i].position.x);
+            a[2].push_back(side1[i].position.x + geomOffset.x);
             a[2].push_back(side1[i].position.y);
-            a[2].push_back(side1[i].position.z);
+            a[2].push_back(side1[i].position.z + geomOffset.y);
 
             a[2].push_back(side1[i].color.x);
             a[2].push_back(side1[i].color.y);
@@ -292,11 +293,11 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
             a[2].push_back(side1[i].txCoord.x);
             a[2].push_back(side1[i].txCoord.y);
         }
-        for (int i = 0; i < top.size(); i++)
+        for (int i = 0; i < side2.size(); i++)
         {
-            a[3].push_back(side2[i].position.x);
+            a[3].push_back(side2[i].position.x + geomOffset.x);
             a[3].push_back(side2[i].position.y);
-            a[3].push_back(side2[i].position.z);
+            a[3].push_back(side2[i].position.z + geomOffset.y);
 
             a[3].push_back(side2[i].color.x);
             a[3].push_back(side2[i].color.y);
@@ -305,11 +306,11 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
             a[3].push_back(side2[i].txCoord.x);
             a[3].push_back(side2[i].txCoord.y);
         }
-        for (int i = 0; i < top.size(); i++)
+        for (int i = 0; i < side3.size(); i++)
         {
-            a[4].push_back(side3[i].position.x);
+            a[4].push_back(side3[i].position.x + geomOffset.x);
             a[4].push_back(side3[i].position.y);
-            a[4].push_back(side3[i].position.z);
+            a[4].push_back(side3[i].position.z + geomOffset.y);
 
             a[4].push_back(side3[i].color.x);
             a[4].push_back(side3[i].color.y);
@@ -318,11 +319,11 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
             a[4].push_back(side3[i].txCoord.x);
             a[4].push_back(side3[i].txCoord.y);
         }
-        for (int i = 0; i < top.size(); i++)
+        for (int i = 0; i < side4.size(); i++)
         {
-            a[5].push_back(side4[i].position.x);
+            a[5].push_back(side4[i].position.x + geomOffset.x);
             a[5].push_back(side4[i].position.y);
-            a[5].push_back(side4[i].position.z);
+            a[5].push_back(side4[i].position.z + geomOffset.y);
 
             a[5].push_back(side4[i].color.x);
             a[5].push_back(side4[i].color.y);
@@ -347,22 +348,22 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
     return arr;
 }
 
-std::vector<uint32_t> Block::getIndicies(const BLOCK::SIDE side, const unsigned int offsetNum)
+std::vector<uint32_t> Block::getIndicies(BLOCK::SIDE side, unsigned int offsetNum)
 {
     if (textureNum.x == 2 && textureNum.y == 0)//AIR JAK NA RAZIE POPRAW TO POTEM
         return { };
 
     std::vector<uint32_t> ind(36);
 
-    for (int i = 0; i < 36; i += 6)
+    for (int i = 0; i < 6; i++)
     {
-        ind[i] = i + offsetNum;
-        ind[i + 1] = i + 1 + offsetNum;
-        ind[i + 2] = i + 2 + offsetNum;
-
-        ind[i + 3] = i + 2 + offsetNum;
-        ind[i + 4] = i + 1 + offsetNum;
-        ind[i + 5] = i + 3 + offsetNum;
+        ind[i * 6] = i * 4 + offsetNum;
+        ind[i * 6 + 1] = i * 4 + 1 + offsetNum;
+        ind[i * 6 + 2] = i * 4 + 2 + offsetNum;
+        
+        ind[i * 6 + 3] = i * 4 + 2 + offsetNum;
+        ind[i * 6 + 4] = i * 4 + 1 + offsetNum;
+        ind[i * 6 + 5] = i * 4 + 3 + offsetNum;
     }
 
     return ind;
