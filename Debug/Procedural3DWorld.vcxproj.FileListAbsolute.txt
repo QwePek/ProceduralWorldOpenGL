@@ -1,2 +1,0 @@
-G:\Visual Studio Projekty\ProceduralWorldOpenGL\Debug\Procedural3DWorld.exe
-G:\Visual Studio Projects\ProceduralWorldOpenGL\Debug\Procedural3DWorld.exe
