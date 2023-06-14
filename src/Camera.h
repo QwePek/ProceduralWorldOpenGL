@@ -30,6 +30,8 @@ public:
 	//Setters
 	void setSpeed(float sp) { if (sp <= 0) { std::cout << "Cannot set speed < 0!\n"; return; }; speed = sp; };
 	void setMouseSensitivity(float sens) { if (sens <= 0) { std::cout << "Cannot set sensitivity < 0!\n"; return; }; mouseSensitivity = sens; };
+	void turnOffMouseMovement() { mouseOn = false; };
+	void turnOnMouseMovement() { mouseOn = true; };
 
 private:
 	void recalculateCameraVectors();
@@ -56,4 +58,6 @@ private:
 	float speed = 3.0f;
 	float mouseSensitivity = 0.1f;
 	float zoom = 45.0f;
+
+	bool mouseOn = true;
 };

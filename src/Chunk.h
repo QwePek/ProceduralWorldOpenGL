@@ -7,7 +7,7 @@ class Chunk
 public:
 	Chunk();
 
-	void init(glm::uvec2 pos, siv::PerlinNoise* perlin);
+	void init(glm::uvec2 pos, siv::PerlinNoise* perlin, float frequency, int octaves);
 
 	void update();
 
@@ -22,7 +22,7 @@ private:
 	void generateChunkGeometry();
 	//void generateIndicies();
 
-	void calculateChunkTerrain(siv::PerlinNoise* perlin);
+	void calculateChunkTerrain(siv::PerlinNoise* perlin, float frequency, int octaves);
 	void createChunkMesh(int x, int y, int z, uint32_t &offset);
 
 	std::vector<float> geometry;

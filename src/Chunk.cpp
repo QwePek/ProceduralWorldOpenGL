@@ -10,7 +10,7 @@ Chunk::Chunk() : blocks{}, position({ 0,0 })
 
 }
 
-void Chunk::init(glm::uvec2 pos, siv::PerlinNoise* perlin)
+void Chunk::init(glm::uvec2 pos, siv::PerlinNoise* perlin, float frequency, int octaves)
 {
 	position = { pos.x, pos.y };
 
@@ -26,7 +26,7 @@ void Chunk::init(glm::uvec2 pos, siv::PerlinNoise* perlin)
 		}
 	}
 
-	calculateChunkTerrain(perlin);
+	calculateChunkTerrain(perlin, frequency, octaves);
 
 	update();
 }
@@ -37,7 +37,7 @@ void Chunk::update()
 	//generateIndicies();
 }
 
-void Chunk::calculateChunkTerrain(siv::PerlinNoise* perlin)
+void Chunk::calculateChunkTerrain(siv::PerlinNoise* perlin, float frequency, int octaves)
 {
 	double noise = 0;
 
@@ -46,8 +46,8 @@ void Chunk::calculateChunkTerrain(siv::PerlinNoise* perlin)
 	{
 		for (int x = 0; x < chunkSize.x; x++)
 		{
-			noise = perlin->octave2D_01(((x + position.x * Chunk::chunkSize.x) * 0.01),
-				((z + position.y * Chunk::chunkSize.z) * 0.01), 8);
+			noise = perlin->octave2D_01(((x + position.x * Chunk::chunkSize.x) * frequency),
+				((z + position.y * Chunk::chunkSize.z) * frequency), octaves);
 
 			uint32_t yHeight = chunkSize.y * noise;
 

@@ -40,6 +40,9 @@ void Camera::processInput(direction dir, double dt)
 
 void Camera::processMouse(double xOffs, double yOffs)
 {
+    if (!mouseOn)
+        return;
+
     xOffs *= mouseSensitivity;
     yOffs *= mouseSensitivity;
 

@@ -140,6 +140,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="res\libraries\imgui\imgui.cpp" />
+    <ClCompile Include="res\libraries\imgui\imgui_demo.cpp" />
+    <ClCompile Include="res\libraries\imgui\imgui_draw.cpp" />
+    <ClCompile Include="res\libraries\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="res\libraries\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="res\libraries\imgui\imgui_tables.cpp" />
+    <ClCompile Include="res\libraries\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Chunk.cpp" />
     <ClCompile Include="src\Block.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
@@ -294,6 +301,15 @@
     <None Include="src\Shaders\shader.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="res\libraries\imgui\imconfig.h" />
+    <ClInclude Include="res\libraries\imgui\imgui.h" />
+    <ClInclude Include="res\libraries\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="res\libraries\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="res\libraries\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="res\libraries\imgui\imgui_internal.h" />
+    <ClInclude Include="res\libraries\imgui\imstb_rectpack.h" />
+    <ClInclude Include="res\libraries\imgui\imstb_textedit.h" />
+    <ClInclude Include="res\libraries\imgui\imstb_truetype.h" />
     <ClInclude Include="res\libraries\perlinNoise\PerlinNoise.hpp" />
     <ClInclude Include="src\Chunk.h" />
     <ClInclude Include="src\Block.h" />

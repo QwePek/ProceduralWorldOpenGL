@@ -10,6 +10,10 @@
 #include "glm\gtc\matrix_transform.hpp"
 #include "glm\gtc\type_ptr.hpp"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include "Camera.h"
 #include "Renderer.h"
 #include "VertexBuffer.h"
@@ -21,7 +25,7 @@
 
 glm::vec2 windowSize = glm::vec2(1000, 800);
 
-Camera cam(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
+Camera cam(glm::vec3(0.0f, 8.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, -45.0f);
 bool firstMouse = true;
 float lastX = windowSize.x / 2.0f;
 float lastY = windowSize.y / 2.0f;
@@ -37,7 +41,7 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 
 void processInput(GLFWwindow* window)
 {
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -55,8 +59,17 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cam.processInput(direction::RIGHT, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    {
+        cam.turnOffMouseMovement();
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    {
+        cam.turnOnMouseMovement();
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
@@ -113,8 +126,7 @@ int main(void)
         std::cout << "Error initializing GLEW" << std::endl;
 
     std::cout << glGetString(GL_VERSION) << std::endl;
-    std::cout << "Block size: " << sizeof(Block) << std::endl;
-
+    //std::cout << "Block size: " << sizeof(Block) << std::endl;
 
     glViewport(0, 0, windowSize.x, windowSize.y);
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
@@ -125,9 +137,6 @@ int main(void)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         srand(time(NULL));
-
-
-        World wrld(5, 5);
 
         //Creating, Compiling, Linking Shaders
         Shader myShader("src/Shaders/shader.shader");
@@ -158,7 +167,23 @@ int main(void)
         //Set scroll function callback
         glfwSetScrollCallback(window, scroll_callback);
 
+        //ImGUI
+        ImGui::CreateContext();
+
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init("#version 330");
+
+        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsLight();
+
         Renderer renderer;
+
+        glm::vec2 worldSize = { 1,1 };
+        World wrld(worldSize.x, worldSize.y);
+
+        int seed = 123456;
+        int ocataves = 8;
+        float frequency = 0.01f;
 
         while (!glfwWindowShouldClose(window))
         {
@@ -167,6 +192,35 @@ int main(void)
             lastFrame = currFrame;
 
             renderer.clear();
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            {
+                ImGui::Begin("World generator");
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", deltaTime, 1 / deltaTime);
+
+                ImGui::InputFloat2("World size", &worldSize.x, "%.0f", 1.0f);
+
+                ImGui::InputInt("Seed", &seed);
+                ImGui::SliderInt("Octaves", &ocataves, 1, 16);
+                ImGui::SliderFloat("Frequency", &frequency, 0.0f, 1.0f);
+
+                if (ImGui::Button("Generate world"))
+                {
+                    wrld.setFrequency(frequency);
+                    wrld.setNumberOfOctaves(ocataves);
+                    wrld.setWorldSeed(seed);
+
+                    if (worldSize != wrld.getWorldSizeVec())
+                        wrld.resizeWorld(worldSize);
+
+                    wrld.updateAll();
+                }
+
+                ImGui::End();
+            }
 
             processInput(window);
 
@@ -198,11 +252,18 @@ int main(void)
 
                 renderer.draw(vao, ib, myShader);
             }
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     glfwTerminate();
     return 0;
 }
