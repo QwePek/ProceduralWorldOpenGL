@@ -1,4 +1,9 @@
 ﻿  Application.cpp
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Block.h(54,40): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=glm::uint
+          ]
 G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(99,67): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
           with
           [
@@ -9,31 +14,16 @@ G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(99,53): warn
           [
               T=float
           ]
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(118,46): warning C4244: 'argument': conversion from 'T' to 'GLsizei', possible loss of data
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(119,46): warning C4244: 'argument': conversion from 'T' to 'GLsizei', possible loss of data
           with
           [
               T=float
           ]
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(118,32): warning C4244: 'argument': conversion from 'T' to 'GLsizei', possible loss of data
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(119,32): warning C4244: 'argument': conversion from 'T' to 'GLsizei', possible loss of data
           with
           [
               T=float
           ]
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(126,19): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(174,31): warning C4018: '<': signed/unsigned mismatch
-  Chunk.cpp
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Chunk.cpp(15,20): warning C4018: '<': signed/unsigned mismatch
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Chunk.cpp(17,21): warning C4018: '<': signed/unsigned mismatch
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Chunk.cpp(19,22): warning C4018: '<': signed/unsigned mismatch
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Chunk.cpp(27,22): warning C4244: 'initializing': conversion from 'double' to 'uint32_t', possible loss of data
-  World.cpp
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\World.cpp(9,20): warning C4018: '<': signed/unsigned mismatch
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\World.cpp(39,20): warning C4018: '<': signed/unsigned mismatch
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\World.cpp(42,20): warning C4018: '<': signed/unsigned mismatch
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\World.cpp(61,20): warning C4018: '<': signed/unsigned mismatch
-G:\Visual Studio Projects\ProceduralWorldOpenGL\src\World.cpp(64,20): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'G:\Visual Studio Projects\ProceduralWorldOpenGL\Debug\vc120.pdb'; linking object as if no debug info
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(127,19): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+G:\Visual Studio Projects\ProceduralWorldOpenGL\src\Application.cpp(173,31): warning C4018: '<': signed/unsigned mismatch
   Procedural3DWorld.vcxproj -> G:\Visual Studio Projects\ProceduralWorldOpenGL\Debug\Procedural3DWorld.exe

@@ -46,10 +46,10 @@ void World::regenerateGeometry()
 		//std::cout << "I: " << i << std::endl;
 		//for (int j = 0; j < vec.size(); j++)
 		//{
-			//if (j % 8 == 0)
-				//std::cout << std::endl;
+		//	if (j % 5 == 0)
+		//		std::cout << std::endl;
 
-			//std::cout << vec[j] << ", ";
+		//	std::cout << vec[j] << ", ";
 		//}
 
 		worldGeometry[i].insert(worldGeometry[i].begin(), vec.begin(), vec.end());

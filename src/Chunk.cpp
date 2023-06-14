@@ -2,6 +2,8 @@
 #include <array>
 #include <cstdlib>
 #include <ctime>
+#include <unordered_map>
+#include <set>
 
 Chunk::Chunk() : blocks{}, position({ 0,0 })
 {
@@ -18,19 +20,13 @@ void Chunk::init(glm::uvec2 pos, siv::PerlinNoise* perlin)
 		{
 			for (int x = 0; x < chunkSize.x; x++)
 			{
-				blocks[x][y][z].setTexture(glm::vec2(0, 0));
+				blocks[x][y][z].setTexture(BLOCK::TEXTURE::GRASS);
 				blocks[x][y][z].position = glm::vec3(x, y, z);
-
-				const double noise = perlin->octave2D_01(((x + position.x * chunkSize.x) * 0.01), 
-					((z + position.y * chunkSize.z) * 0.01), 8);
-
-				uint32_t yHeight = chunkSize.y * noise;
-
-				for (uint32_t h = chunkSize.y - 1; h > yHeight; h--)
-					blocks[x][h][z].setTexture({ 2,0 });
 			}
 		}
 	}
+
+	calculateChunkTerrain(perlin);
 
 	update();
 }
@@ -38,31 +34,41 @@ void Chunk::init(glm::uvec2 pos, siv::PerlinNoise* perlin)
 void Chunk::update()
 {
 	generateChunkGeometry();
-	generateIndicies();
+	//generateIndicies();
+}
+
+void Chunk::calculateChunkTerrain(siv::PerlinNoise* perlin)
+{
+	double noise = 0;
+
+	// Terrain calculation
+	for (int z = 0; z < chunkSize.z; z++)
+	{
+		for (int x = 0; x < chunkSize.x; x++)
+		{
+			noise = perlin->octave2D_01(((x + position.x * Chunk::chunkSize.x) * 0.01),
+				((z + position.y * Chunk::chunkSize.z) * 0.01), 8);
+
+			uint32_t yHeight = chunkSize.y * noise;
+
+			//Air fill
+			for (int h = Chunk::chunkSize.y - 1; h > yHeight; h--)
+				blocks[x][h][z].setTexture(BLOCK::TEXTURE::AIR);
+
+			//Dirt fill
+			for (int h = yHeight - 1; h > yHeight - 5 && h >= 0; h--)
+				blocks[x][h][z].setTexture(BLOCK::TEXTURE::DIRT);
+
+			//Stone fill
+			for (int h = yHeight - 5; h >= 0; h--)
+				blocks[x][h][z].setTexture(BLOCK::TEXTURE::STONE);
+		}
+	}
 }
 
 void Chunk::generateChunkGeometry()
 {
 	geometry.clear();
-	for (uint32_t z = 0; z < chunkSize.z; z++)
-	{
-		for (uint32_t y = 0; y < chunkSize.y; y++)
-		{
-			for (uint32_t x = 0; x < chunkSize.x; x++)
-			{
-				auto blockGeometry = blocks[x][y][z].getGeometry();
-				if (blockGeometry.empty())
-					continue;
-
-				geometry.insert(geometry.end(), blockGeometry.begin(), blockGeometry.end());
-			}
-		}
-	}
-}
-
-void Chunk::generateIndicies()
-{
-	indicies.clear();
 	uint32_t offset = 0;
 
 	for (uint32_t z = 0; z < chunkSize.z; z++)
@@ -71,13 +77,76 @@ void Chunk::generateIndicies()
 		{
 			for (uint32_t x = 0; x < chunkSize.x; x++)
 			{
-				auto ind = blocks[x][y][z].getIndicies(BLOCK::SIDE::ALL, offset);
-				if (ind.empty())
-					continue;
+				//if (blocks[x][y][z].getTextureType() == BLOCK::TEXTURE::AIR)
+				//	continue;
 
-				indicies.insert(indicies.end(), ind.begin(), ind.end());
-				offset += 24;
+				createChunkMesh(x, y, z, offset);
+
+				//auto blockGeometry = blocks[x][y][z].getGeometry();
+				//if (blockGeometry.empty())
+				//	continue;
+
+				//geometry.insert(geometry.end(), blockGeometry.begin(), blockGeometry.end());
 			}
 		}
 	}
 }
+
+void Chunk::createChunkMesh(int x, int y, int z, uint32_t &offset)
+{
+	if (blocks[x][y][z].getTextureType() == BLOCK::TEXTURE::AIR)
+		return;
+
+	std::set<BLOCK::SIDE> scianki;
+
+	if ((z == 0) || (z > 0 && blocks[x][y][z - 1].getTextureType() == BLOCK::TEXTURE::AIR)) //róg
+		scianki.insert(BLOCK::SIDE::SIDE1);
+
+	if ((z == chunkSize.z - 1) || (z < chunkSize.z - 1 && blocks[x][y][z + 1].getTextureType() == BLOCK::TEXTURE::AIR)) //róg
+		scianki.insert(BLOCK::SIDE::SIDE2);
+
+	if ((x == 0) || (x > 0 && blocks[x - 1][y][z].getTextureType() == BLOCK::TEXTURE::AIR)) //róg
+		scianki.insert(BLOCK::SIDE::SIDE3);
+
+	if ((x == chunkSize.x - 1) || (x < chunkSize.x - 1 && blocks[x + 1][y][z].getTextureType() == BLOCK::TEXTURE::AIR)) //róg
+		scianki.insert(BLOCK::SIDE::SIDE4);
+
+	if ((y == 0) || (y > 0 && blocks[x][y - 1][z].getTextureType() == BLOCK::TEXTURE::AIR))
+		scianki.insert(BLOCK::SIDE::BOTTOM);
+
+	if ((y == chunkSize.y - 1) || (y < chunkSize.y - 1 && blocks[x][y + 1][z].getTextureType() == BLOCK::TEXTURE::AIR))
+		scianki.insert(BLOCK::SIDE::TOP);
+
+	for (BLOCK::SIDE sciana : scianki)
+	{
+		auto blockGeometry = blocks[x][y][z].getGeometry(sciana);
+		geometry.insert(geometry.end(), blockGeometry.begin(), blockGeometry.end());
+
+		auto blockIndicies = blocks[x][y][z].getIndicies(sciana, offset);
+		indicies.insert(indicies.end(), blockIndicies.begin(), blockIndicies.end());
+
+		offset += 4;
+	}
+}
+
+//void Chunk::generateIndicies()
+//{
+//	indicies.clear();
+//	uint32_t offset = 0;
+//
+//	for (uint32_t z = 0; z < chunkSize.z; z++)
+//	{
+//		for (uint32_t y = 0; y < chunkSize.y; y++)
+//		{
+//			for (uint32_t x = 0; x < chunkSize.x; x++)
+//			{
+//				auto ind = blocks[x][y][z].getIndicies(BLOCK::SIDE::ALL, offset);
+//				if (ind.empty())
+//					continue;
+//
+//				indicies.insert(indicies.end(), ind.begin(), ind.end());
+//				offset += 24;
+//			}
+//		}
+//	}
+//}

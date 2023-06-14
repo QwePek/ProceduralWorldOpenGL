@@ -4,27 +4,29 @@ Block::Block()
 {
     position = glm::vec3(0.0f, 0.0f, 0.0f);
     size = glm::vec3(1.0f, 1.0f, 1.0f);
-    color = glm::vec3(1.0f, 1.0f, 1.0f);
-    setTexture({ 0,0 });
+    setTexture(BLOCK::TEXTURE::GRASS);
 }
 
 Block::Block(glm::vec3 pos, glm::vec3 size) : position(pos), size(size)
 {
-    color = glm::vec3(1.0f, 1.0f, 1.0f);
-    setTexture({ 0,0 });
+    setTexture(BLOCK::TEXTURE::GRASS);
 }
 
-Block::Block(glm::vec3 pos, glm::vec3 size, glm::vec3 color) : position(pos), size(size), color(color)
+int Block::setTexture(BLOCK::TEXTURE type)
 {
-    setTexture({ 0,0 });
-}
+    switch (type)
+    {
+    case BLOCK::TEXTURE::AIR:
+        textureNum = glm::uvec2(15, 15); break;
+    case BLOCK::TEXTURE::GRASS:
+        textureNum = glm::uvec2(0, 0); break;
+    case BLOCK::TEXTURE::DIRT:
+        textureNum = glm::uvec2(2, 0); break;
+    case BLOCK::TEXTURE::STONE:
+        textureNum = glm::uvec2(1, 0); break;
+    }
 
-int Block::setTexture(glm::vec2 tx)
-{
-    if (tx.x < 0 || tx.y < 0)
-        return 0;
-
-    textureNum = tx;
+    textureType = type;
     return 1;
 }
 
@@ -40,9 +42,6 @@ std::array<blockVertex, 4> Block::getTopVertex()
     v[2].position = { position.x + sNa2.x, position.y + sNa2.y, position.z - sNa2.z };
     v[3].position = { position.x + sNa2.x, position.y + sNa2.y, position.z + sNa2.z };
 
-    for (int i = 0; i < 4; i++)
-        v[i].color = color;
-
     setTxCoords(v, txN);
 
     return { v[0], v[1], v[2], v[3] };
@@ -55,7 +54,7 @@ std::array<blockVertex, 4> Block::getBottomVertex()
     glm::vec2 txN = textureNum;
 
     //Oblsugiwanie innych tekstur dla boków
-    if (textureNum.x == 0 && textureNum.y == 0)
+    if (textureType == BLOCK::TEXTURE::GRASS)
         txN = glm::vec2(2, 0);
 
     blockVertex v[4];
@@ -64,9 +63,6 @@ std::array<blockVertex, 4> Block::getBottomVertex()
     v[1].position = { position.x - sNa2.x, position.y - sNa2.y, position.z + sNa2.z };
     v[2].position = { position.x + sNa2.x, position.y - sNa2.y, position.z - sNa2.z };
     v[3].position = { position.x + sNa2.x, position.y - sNa2.y, position.z + sNa2.z };
-
-    for (int i = 0; i < 4; i++)
-        v[i].color = color;
 
     setTxCoords(v, txN);
 
@@ -79,7 +75,7 @@ std::array<blockVertex, 4> Block::getSide1Vertex()
     glm::vec2 txN = textureNum;
 
     //Oblsugiwanie innych tekstur dla boków
-    if (textureNum.x == 0 && textureNum.y == 0)
+    if (textureType == BLOCK::TEXTURE::GRASS)
         txN = glm::vec2(3, 0);
 
     blockVertex v[4];
@@ -88,9 +84,6 @@ std::array<blockVertex, 4> Block::getSide1Vertex()
     v[1].position = { position.x - sNa2.x, position.y + sNa2.y, position.z - sNa2.z };
     v[2].position = { position.x + sNa2.x, position.y - sNa2.y, position.z - sNa2.z };
     v[3].position = { position.x + sNa2.x, position.y + sNa2.y, position.z - sNa2.z };
-
-    for (int i = 0; i < 4; i++)
-        v[i].color = color;
 
     setTxCoords(v, txN, true);
 
@@ -103,7 +96,7 @@ std::array<blockVertex, 4> Block::getSide2Vertex()
     glm::vec2 txN = textureNum;
 
     //Oblsugiwanie innych tekstur dla boków
-    if (textureNum.x == 0 && textureNum.y == 0)
+    if (textureType == BLOCK::TEXTURE::GRASS)
         txN = glm::vec2(3, 0);
 
     blockVertex v[4];
@@ -112,9 +105,6 @@ std::array<blockVertex, 4> Block::getSide2Vertex()
     v[1].position = { position.x - sNa2.x, position.y + sNa2.y, position.z + sNa2.z };
     v[2].position = { position.x + sNa2.x, position.y - sNa2.y, position.z + sNa2.z };
     v[3].position = { position.x + sNa2.x, position.y + sNa2.y, position.z + sNa2.z };
-
-    for (int i = 0; i < 4; i++)
-        v[i].color = color;
 
     setTxCoords(v, txN, true);
 
@@ -127,7 +117,7 @@ std::array<blockVertex, 4> Block::getSide3Vertex()
     glm::vec2 txN = textureNum;
 
     //Oblsugiwanie innych tekstur dla boków
-    if (textureNum.x == 0 && textureNum.y == 0)
+    if (textureType == BLOCK::TEXTURE::GRASS)
         txN = glm::vec2(3, 0);
 
     blockVertex v[4];
@@ -136,9 +126,6 @@ std::array<blockVertex, 4> Block::getSide3Vertex()
     v[1].position = { position.x - sNa2.x, position.y + sNa2.y, position.z - sNa2.z };
     v[2].position = { position.x - sNa2.x, position.y - sNa2.y, position.z + sNa2.z };
     v[3].position = { position.x - sNa2.x, position.y + sNa2.y, position.z + sNa2.z };
-
-    for (int i = 0; i < 4; i++)
-        v[i].color = color;
 
     setTxCoords(v, txN, true);
 
@@ -151,7 +138,7 @@ std::array<blockVertex, 4> Block::getSide4Vertex()
     glm::vec2 txN = textureNum;
 
     //Oblsugiwanie innych tekstur dla boków
-    if (textureNum.x == 0 && textureNum.y == 0)
+    if (textureType == BLOCK::TEXTURE::GRASS)
         txN = glm::vec2(3, 0);
 
     blockVertex v[4];
@@ -160,9 +147,6 @@ std::array<blockVertex, 4> Block::getSide4Vertex()
     v[1].position = { position.x + sNa2.x, position.y + sNa2.y, position.z - sNa2.z };
     v[2].position = { position.x + sNa2.x, position.y - sNa2.y, position.z + sNa2.z };
     v[3].position = { position.x + sNa2.x, position.y + sNa2.y, position.z + sNa2.z };
-
-    for (int i = 0; i < 4; i++)
-        v[i].color = color;
 
     setTxCoords(v, txN, true);
     
@@ -173,74 +157,133 @@ void Block::setTxCoords(blockVertex* v, glm::vec2 txNum, bool side)
 {
     if (!side)
     {
-        v[0].txCoord = glm::vec2((1.0f / numOfTexInPNG.x) * (txNum.x + 1),
-            1.0f - (txNum.y * (1.0f / numOfTexInPNG.y))); //prawy gorny
+        v[0].txCoord = glm::vec2((1.0f / BLOCK::numOfTexInPNG.x) * (txNum.x + 1),
+            1.0f - (txNum.y * (1.0f / BLOCK::numOfTexInPNG.y))); //prawy gorny
 
-        v[1].txCoord = glm::vec2((1.0f / numOfTexInPNG.x) * (txNum.x + 1),
-            1.0f - ((txNum.y + 1) * (1.0f / numOfTexInPNG.y))); //prawy dolny
+        v[1].txCoord = glm::vec2((1.0f / BLOCK::numOfTexInPNG.x) * (txNum.x + 1),
+            1.0f - ((txNum.y + 1) * (1.0f / BLOCK::numOfTexInPNG.y))); //prawy dolny
 
-        v[2].txCoord = glm::vec2((1.0f / numOfTexInPNG.x) * txNum.x,
-            1.0f - (txNum.y * (1.0f / numOfTexInPNG.y))); // lewy gorny
+        v[2].txCoord = glm::vec2((1.0f / BLOCK::numOfTexInPNG.x) * txNum.x,
+            1.0f - (txNum.y * (1.0f / BLOCK::numOfTexInPNG.y))); // lewy gorny
 
-        v[3].txCoord = glm::vec2((1.0f / numOfTexInPNG.x) * txNum.x,
-            1.0f - ((txNum.y + 1) * (1.0f / numOfTexInPNG.y))); //lewy dolny
+        v[3].txCoord = glm::vec2((1.0f / BLOCK::numOfTexInPNG.x) * txNum.x,
+            1.0f - ((txNum.y + 1) * (1.0f / BLOCK::numOfTexInPNG.y))); //lewy dolny
 
         return;
     }
 
-    v[3].txCoord = glm::vec2((1.0f / numOfTexInPNG.x) * (txNum.x + 1),
-        1.0f - (txNum.y * (1.0f / numOfTexInPNG.y))); //prawy gorny
+    v[3].txCoord = glm::vec2((1.0f / BLOCK::numOfTexInPNG.x) * (txNum.x + 1),
+        1.0f - (txNum.y * (1.0f / BLOCK::numOfTexInPNG.y))); //prawy gorny
 
-    v[2].txCoord = glm::vec2((1.0f / numOfTexInPNG.x) * (txNum.x + 1),
-        1.0f - ((txNum.y + 1) * (1.0f / numOfTexInPNG.y))); //prawy dolny
+    v[2].txCoord = glm::vec2((1.0f / BLOCK::numOfTexInPNG.x) * (txNum.x + 1),
+        1.0f - ((txNum.y + 1) * (1.0f / BLOCK::numOfTexInPNG.y))); //prawy dolny
 
-    v[1].txCoord = glm::vec2((1.0f / numOfTexInPNG.x) * txNum.x,
-        1.0f - (txNum.y * (1.0f / numOfTexInPNG.y))); // lewy gorny
+    v[1].txCoord = glm::vec2((1.0f / BLOCK::numOfTexInPNG.x) * txNum.x,
+        1.0f - (txNum.y * (1.0f / BLOCK::numOfTexInPNG.y))); // lewy gorny
 
-    v[0].txCoord = glm::vec2((1.0f / numOfTexInPNG.x) * txNum.x,
-        1.0f - ((txNum.y + 1) * (1.0f / numOfTexInPNG.y))); //lewy dolny/
+    v[0].txCoord = glm::vec2((1.0f / BLOCK::numOfTexInPNG.x) * txNum.x,
+        1.0f - ((txNum.y + 1) * (1.0f / BLOCK::numOfTexInPNG.y))); //lewy dolny/
 }
 
-std::vector<float> Block::getGeometry(const BLOCK::SIDE side, glm::uvec2 offset)
+std::vector<float> Block::getGeometry(const BLOCK::SIDE side)
 {
-    if (textureNum.x == 2 && textureNum.y == 0)//AIR JAK NA RAZIE POPRAW TO POTEM
+    if (textureType == BLOCK::TEXTURE::AIR)
         return { };
 
-    geomOffset = offset;
     glm::vec3 sNa2 = size / 2.0f;
 
     std::vector<float> arr;
 
     if (side == BLOCK::SIDE::TOP)
     {
-        auto top = getTopVertex();
+        auto dat = getTopVertex();
+        for (int i = 0; i < dat.size(); i++)
+        {
+            arr.push_back(dat[i].position.x);
+            arr.push_back(dat[i].position.y);
+            arr.push_back(dat[i].position.z);
+
+            arr.push_back(dat[i].txCoord.x);
+            arr.push_back(dat[i].txCoord.y);
+        }
+        return arr;
         //arr.insert(arr.end(), top.begin(), top.end());
     }
     else if (side == BLOCK::SIDE::BOTTOM)
     {
-        auto bottom = getBottomVertex();
+        auto dat = getBottomVertex();
+        for (int i = 0; i < dat.size(); i++)
+        {
+            arr.push_back(dat[i].position.x);
+            arr.push_back(dat[i].position.y);
+            arr.push_back(dat[i].position.z);
+
+            arr.push_back(dat[i].txCoord.x);
+            arr.push_back(dat[i].txCoord.y);
+        }
+        return arr;
         //arr.insert(arr.end(), bottom.begin(), bottom.end());
     }
     else if (side == BLOCK::SIDE::SIDE1)
     {
-        auto side1 = getSide1Vertex();
+        auto dat = getSide1Vertex();
+        for (int i = 0; i < dat.size(); i++)
+        {
+            arr.push_back(dat[i].position.x);
+            arr.push_back(dat[i].position.y);
+            arr.push_back(dat[i].position.z);
+
+            arr.push_back(dat[i].txCoord.x);
+            arr.push_back(dat[i].txCoord.y);
+        }
+        return arr;
         //arr.insert(arr.end(), side1.begin(), side1.end());
     }
     else if (side == BLOCK::SIDE::SIDE2)
     {
-        auto side2 = getSide2Vertex();
+        auto dat = getSide2Vertex();
+        for (int i = 0; i < dat.size(); i++)
+        {
+            arr.push_back(dat[i].position.x);
+            arr.push_back(dat[i].position.y);
+            arr.push_back(dat[i].position.z);
+
+            arr.push_back(dat[i].txCoord.x);
+            arr.push_back(dat[i].txCoord.y);
+        }
+        return arr;
         //arr.insert(arr.end(), side2.begin(), side2.end());
 
     }
     else if (side == BLOCK::SIDE::SIDE3)
     {
-        auto side3 = getSide3Vertex();
+        auto dat = getSide3Vertex();
+        for (int i = 0; i < dat.size(); i++)
+        {
+            arr.push_back(dat[i].position.x);
+            arr.push_back(dat[i].position.y);
+            arr.push_back(dat[i].position.z);
+
+            arr.push_back(dat[i].txCoord.x);
+            arr.push_back(dat[i].txCoord.y);
+        }
+        return arr;
         //arr.insert(arr.end(), side3.begin(), side3.end());
 
     }
     else if (side == BLOCK::SIDE::SIDE4)
     {
-        auto side4 = getSide4Vertex();
+        auto dat = getSide4Vertex();
+        for (int i = 0; i < dat.size(); i++)
+        {
+            arr.push_back(dat[i].position.x);
+            arr.push_back(dat[i].position.y);
+            arr.push_back(dat[i].position.z);
+
+            arr.push_back(dat[i].txCoord.x);
+            arr.push_back(dat[i].txCoord.y);
+        }
+        return arr;
         //arr.insert(arr.end(), side4.begin(), side4.end());
     }
     else
@@ -256,78 +299,54 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side, glm::uvec2 offset)
         std::vector<float> a[6];
         for (int i = 0; i < top.size(); i++)
         {
-            a[0].push_back(top[i].position.x + geomOffset.x);
+            a[0].push_back(top[i].position.x);
             a[0].push_back(top[i].position.y);
-            a[0].push_back(top[i].position.z + geomOffset.y);
-
-            a[0].push_back(top[i].color.x);
-            a[0].push_back(top[i].color.y);
-            a[0].push_back(top[i].color.z);
+            a[0].push_back(top[i].position.z);
 
             a[0].push_back(top[i].txCoord.x);
             a[0].push_back(top[i].txCoord.y);
         }
         for (int i = 0; i < bottom.size(); i++)
         {
-            a[1].push_back(bottom[i].position.x + geomOffset.x);
+            a[1].push_back(bottom[i].position.x);
             a[1].push_back(bottom[i].position.y);
-            a[1].push_back(bottom[i].position.z + geomOffset.y);
-
-            a[1].push_back(bottom[i].color.x);
-            a[1].push_back(bottom[i].color.y);
-            a[1].push_back(bottom[i].color.z);
+            a[1].push_back(bottom[i].position.z);
 
             a[1].push_back(bottom[i].txCoord.x);
             a[1].push_back(bottom[i].txCoord.y);
         }
         for (int i = 0; i < side1.size(); i++)
         {
-            a[2].push_back(side1[i].position.x + geomOffset.x);
+            a[2].push_back(side1[i].position.x);
             a[2].push_back(side1[i].position.y);
-            a[2].push_back(side1[i].position.z + geomOffset.y);
-
-            a[2].push_back(side1[i].color.x);
-            a[2].push_back(side1[i].color.y);
-            a[2].push_back(side1[i].color.z);
+            a[2].push_back(side1[i].position.z);
 
             a[2].push_back(side1[i].txCoord.x);
             a[2].push_back(side1[i].txCoord.y);
         }
         for (int i = 0; i < side2.size(); i++)
         {
-            a[3].push_back(side2[i].position.x + geomOffset.x);
+            a[3].push_back(side2[i].position.x);
             a[3].push_back(side2[i].position.y);
-            a[3].push_back(side2[i].position.z + geomOffset.y);
-
-            a[3].push_back(side2[i].color.x);
-            a[3].push_back(side2[i].color.y);
-            a[3].push_back(side2[i].color.z);
+            a[3].push_back(side2[i].position.z);
 
             a[3].push_back(side2[i].txCoord.x);
             a[3].push_back(side2[i].txCoord.y);
         }
         for (int i = 0; i < side3.size(); i++)
         {
-            a[4].push_back(side3[i].position.x + geomOffset.x);
+            a[4].push_back(side3[i].position.x);
             a[4].push_back(side3[i].position.y);
-            a[4].push_back(side3[i].position.z + geomOffset.y);
-
-            a[4].push_back(side3[i].color.x);
-            a[4].push_back(side3[i].color.y);
-            a[4].push_back(side3[i].color.z);
+            a[4].push_back(side3[i].position.z);
 
             a[4].push_back(side3[i].txCoord.x);
             a[4].push_back(side3[i].txCoord.y);
         }
         for (int i = 0; i < side4.size(); i++)
         {
-            a[5].push_back(side4[i].position.x + geomOffset.x);
+            a[5].push_back(side4[i].position.x);
             a[5].push_back(side4[i].position.y);
-            a[5].push_back(side4[i].position.z + geomOffset.y);
-
-            a[5].push_back(side4[i].color.x);
-            a[5].push_back(side4[i].color.y);
-            a[5].push_back(side4[i].color.z);
+            a[5].push_back(side4[i].position.z);
 
             a[5].push_back(side4[i].txCoord.x);
             a[5].push_back(side4[i].txCoord.y);
@@ -350,14 +369,28 @@ std::vector<float> Block::getGeometry(const BLOCK::SIDE side, glm::uvec2 offset)
 
 std::vector<uint32_t> Block::getIndicies(BLOCK::SIDE side, unsigned int offsetNum)
 {
-    if (textureNum.x == 2 && textureNum.y == 0)//AIR JAK NA RAZIE POPRAW TO POTEM
+    if (textureType == BLOCK::TEXTURE::AIR)
         return { };
+
+    if (side != BLOCK::SIDE::ALL)
+    {
+        std::vector<uint32_t> ind(6);
+        ind[0] = 0 + offsetNum;
+        ind[1] = 1 + offsetNum;
+        ind[2] = 2 + offsetNum;
+
+        ind[3] = 2 + offsetNum;
+        ind[4] = 1 + offsetNum;
+        ind[5] = 3 + offsetNum;
+
+        return ind;
+    }
 
     std::vector<uint32_t> ind(36);
 
     for (int i = 0; i < 6; i++)
     {
-        ind[i * 6] = i * 4 + offsetNum;
+        ind[i * 6 + 0] = i * 4 + 0 + offsetNum;
         ind[i * 6 + 1] = i * 4 + 1 + offsetNum;
         ind[i * 6 + 2] = i * 4 + 2 + offsetNum;
         

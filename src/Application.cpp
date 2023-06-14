@@ -113,6 +113,7 @@ int main(void)
         std::cout << "Error initializing GLEW" << std::endl;
 
     std::cout << glGetString(GL_VERSION) << std::endl;
+    std::cout << "Block size: " << sizeof(Block) << std::endl;
 
 
     glViewport(0, 0, windowSize.x, windowSize.y);
@@ -126,20 +127,18 @@ int main(void)
         srand(time(NULL));
 
 
-        World wrld(16, 16);
+        World wrld(5, 5);
 
         //Creating, Compiling, Linking Shaders
         Shader myShader("src/Shaders/shader.shader");
 
-        VertexBuffer vbo(sizeof(blockVertex) * 24 * wrld.getBlocksNeeded()); //VertexBuffer bedzie mogl przechowac 50 blokow
+        VertexBuffer vbo(sizeof(blockVertex) * 24 * Chunk::getChunksMaxBlocks()); //VertexBuffer bedzie mogl przechowac 50 blokow
 
         VertexArray vao;
-        //IndexBuffer ib(indi.data(), indi.size());
 
         VertexBufferLayout layout;
-        layout.Push<float>(3);
-        layout.Push<float>(3);
-        layout.Push<float>(2);
+        layout.Push<float>(3);  //pos
+        layout.Push<float>(2);  //tx coord
 
         vao.addBuffer(vbo, layout);
 

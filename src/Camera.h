@@ -25,6 +25,7 @@ public:
 	//Getters
 	float getSpeed() const { return speed; };
 	float getMouseSensitivity() const { return mouseSensitivity; };
+	glm::vec3 getPosition() const { return position; };
 
 	//Setters
 	void setSpeed(float sp) { if (sp <= 0) { std::cout << "Cannot set speed < 0!\n"; return; }; speed = sp; };
