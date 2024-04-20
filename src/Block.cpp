@@ -24,6 +24,12 @@ int Block::setTexture(BLOCK::TEXTURE type)
         textureNum = glm::uvec2(2, 0); break;
     case BLOCK::TEXTURE::STONE:
         textureNum = glm::uvec2(1, 0); break;
+    case BLOCK::TEXTURE::SAND:
+        textureNum = glm::uvec2(2, 1); break;
+    case BLOCK::TEXTURE::GRAVEL:
+        textureNum = glm::uvec2(3, 1); break;
+    case BLOCK::TEXTURE::WATER:
+        textureNum = glm::uvec2(3, 4); break;
     }
 
     textureType = type;

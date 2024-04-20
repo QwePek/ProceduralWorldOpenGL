@@ -18,7 +18,7 @@ struct blockVertex
 namespace BLOCK
 {
     enum class SIDE { ALL, TOP, BOTTOM, SIDE1, SIDE2, SIDE3, SIDE4 };
-    enum class TEXTURE { GRASS, AIR, DIRT, STONE };
+    enum class TEXTURE { GRASS, AIR, DIRT, STONE, SAND, GRAVEL, WATER };
     const glm::uvec2 numOfTexInPNG = glm::uvec2(16, 16);
 }
 

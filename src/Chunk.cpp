@@ -55,6 +55,17 @@ void Chunk::calculateChunkTerrain(siv::PerlinNoise* perlin, float frequency, int
 			for (int h = Chunk::chunkSize.y - 1; h > yHeight; h--)
 				blocks[x][h][z].setTexture(BLOCK::TEXTURE::AIR);
 
+			if(noise >= 0.5f)
+				blocks[x][yHeight][z].setTexture(BLOCK::TEXTURE::GRASS);
+			else if(noise >= 0.49f)
+				blocks[x][yHeight][z].setTexture(BLOCK::TEXTURE::GRAVEL);
+			else if(noise < 0.49f && noise >= 0.4f)
+				blocks[x][yHeight][z].setTexture(BLOCK::TEXTURE::GRASS);
+			else if(noise >= 0.35f)
+				blocks[x][yHeight][z].setTexture(BLOCK::TEXTURE::SAND);
+			else
+				blocks[x][yHeight][z].setTexture(BLOCK::TEXTURE::WATER);
+
 			//Dirt fill
 			for (int h = yHeight - 1; h > yHeight - 5 && h >= 0; h--)
 				blocks[x][h][z].setTexture(BLOCK::TEXTURE::DIRT);
